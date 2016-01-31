@@ -170,7 +170,13 @@ class RequestHandler(BaseHTTPRequestHandler):
             if uid == friendUUID:
                 return (409, 'You can\'t add yourself as a friend.')
             if friendUUID in data[uid]['friendReqs']:
+                if not 'friends' in data[friendUUID]:
+                    data[friendUUID]['friends'] = []
+                if not 'friends' in data[uid]:
+                    data[uid]['friends'] = []
+
                 # Yay! Friend request acception time!
+                print('mutual acception', uid, friendUUID)
                 data[friendUUID]['friends'] += uid
                 data[uid]['friends'] += friendUUID
                 data[friendUUID]['friendReqs'].remove(uid)
