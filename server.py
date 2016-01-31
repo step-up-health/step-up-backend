@@ -326,4 +326,5 @@ def runServer(server_class=HTTPServer, handler_class=RequestHandler):
     except Exception:
         httpd.shutdown()
 
-runServer()
+if __name__ == '__main__':
+    runServer()
