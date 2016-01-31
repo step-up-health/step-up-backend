@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.request, urllib.parse
 import random
@@ -50,11 +51,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             self.wfile.write(bytes(str(code) + ' ' + string, 'utf-8'))
 
-    def pin(self, data, uid, pinData):
+    def pin(self, data, uid, pinData, pinId):
         if 'tltoken' in data[uid]:
-            url = 'https://timeline-api.getpebble.com/v1/user/pins/' +\
-                  'friend-request-9'
-                  #   'friend-request-' + str(random.randint(10**8, 10**9))
+            url = 'https://timeline-api.getpebble.com/v1/user/pins/' + pinId
             req = urllib.request.Request(
                             url,
                             data = bytes(json.dumps(pinData), 'utf-8'),
@@ -163,11 +162,15 @@ class RequestHandler(BaseHTTPRequestHandler):
             data[friendUUID]['friendReqs'] = list(set(data[friendUUID]['friendReqs']))
             self.write_data(data)
             try:
+                pinId = 'friend-request-' + str(random.randint(10**8, 10**9))
                 self.pin(data, friendUUID, {
-                    'title': 'Friend Request!',
-                    'subtitle': 'Step Up!',
-                    'body': friendUsername + ' wants to be your friend on Step Up!'
-                })
+                    'time': time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    'layout': {
+                        'title': 'Friend Request!',
+                        'subtitle': 'Step Up!',
+                        'body': friendUsername + ' wants to be your friend on Step Up!'
+                    }
+                }, pinId)
             except urllib.error.HTTPError as e:
                 return (200, 'pin sending failure: ' + e.read().decode('utf-8'))
             return (200, 'OK')
