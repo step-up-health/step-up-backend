@@ -31,6 +31,12 @@ class RequestHandler(BaseHTTPRequestHandler):
         json.dump(data, open(self.get_data_path(), 'w'), sort_keys=True,
                     indent=4, separators=(',', ': '))
 
+    def get_own_api_root(self):
+        if 'OPENSHIFT_DATA_DIR' in os.environ:
+            return 'https://pythonbackend-stepupforpebble.rhcloud.com/'
+        else:
+            return 'http://localhost:8080/'
+
     def username_to_uid(self, data, username):
         for key, item in data.items():
             if 'username' in item and item['username'] == username:
@@ -194,7 +200,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                             {
                                 'title': 'Accept'
                                 'url': self.get_own_api_root() +
-                                       '/send_friend_request?uid=' + friendUUID +
+                                       'send_friend_request?uid=' + friendUUID +
                                        '&addusername=' + requestorUsername
                             }
                         ]
