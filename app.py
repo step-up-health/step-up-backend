@@ -342,9 +342,13 @@ class RequestHandler(BaseHTTPRequestHandler):
                 pass
         elif '/username_in_use' in self.path:
             try:
-                assert 'username' in qdata
-                info = self.username_in_use(qdata['username'][0])
-                self.respond(200, json.dumps(str(info)))
+                assert 'username' in qdata,
+                       'uid' in qdata
+                ownerUid = self.username_to_uid(qdata['username'][0])
+                if ownerUid == qdata['uid'][0] || ownerUid is False:
+                    self.respond(200, json.dumps('"False"'))
+                    return
+                self.respond(200, json.dumps('"True"'))
                 return
             except AssertionError:
                 self.respond(400, 'Malformed Request')
