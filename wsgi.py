@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 import os
+import json
 
 def application(environ, start_response):
-
+    response_body = json.dumps(environ)
     ctype = 'text/plain'
     if environ['PATH_INFO'] == '/health':
-        response_body = "1"
+        response_body += "1"
     elif environ['PATH_INFO'] == '/env':
-        response_body = ['%s: %s' % (key, value)
+        response_body += ['%s: %s' % (key, value)
                     for key, value in sorted(environ.items())]
-        response_body = '\n'.join(response_body)
+        response_body += '\n'.join(response_body)
     else:
         ctype = 'text/html'
-        response_body = '''<!doctype html>
+        response_body += '''<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
