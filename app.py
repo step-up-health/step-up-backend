@@ -261,11 +261,12 @@ class RequestHandler(BaseHTTPRequestHandler):
             data[uid]['friends'] = []
         friendUUID = self.username_to_uid(data, friendUsername)
         requestorUsername = self.uid_to_username(data, uid)
-        if not friendUUID is False:
-            data[uid]['friends'] = list(set(data[uid]['friends']))
-            if friendUUID in data[uid]['friends']:
-                data[uid]['friends'].remove(friendUUID)
 
+        data[uid]['friends'] = list(set(data[uid]['friends']))
+        if friendUUID in data[uid]['friends']:
+            data[uid]['friends'].remove(friendUUID)
+
+        if not friendUUID is False:
             data[friendUUID]['friends'] = list(set(data[friendUUID]['friends']))
             if uid in data[friendUUID]['friends']:
                 data[friendUUID]['friends'].remove(uid)
