@@ -152,6 +152,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             return (400, 'Your user doesn\'t exist');
         friendUUID = self.username_to_uid(data, friendUsername)
         if friendUUID is not False:
+            requestorUsername = self.uid_to_username(uid)
             if not 'friendReqs' in data[friendUUID]:
                 data[friendUUID]['friendReqs'] = []
             if len(data[friendUUID]['friendReqs']) >= 20:
@@ -169,7 +170,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     'layout': {
                         'title': 'Friend Request!',
                         'subtitle': 'Step Up!',
-                        'body': friendUsername + ' wants to be your friend on Step Up!',
+                        'body': requestorUsername + ' wants to be your friend on Step Up!',
                         'type': 'genericPin'
                     }
                 }, pinId)
@@ -315,7 +316,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 print(self.path)
                 username = self.get_username(qdata['uid'][0])
                 if username is not False:
-                    self.respond(200, 'OK')
+                    self.respond(200, username)
                 else:
                     self.respond(404, 'User not registered')
                 return
