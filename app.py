@@ -198,7 +198,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                         },
                         'actions': [
                             {
-                                'title': 'Accept'
+                                'title': 'Accept',
                                 'url': self.get_own_api_root() +
                                        'send_friend_request?uid=' + friendUUID +
                                        '&addusername=' + requestorUsername
