@@ -181,8 +181,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                 try:
                     data[friendUUID]['friends'] += [uid]
                     data[uid]['friends'] += [friendUUID]
-                    data[friendUUID]['friendReqs'].remove(uid)
-                    data[uid]['friendReqs'].remove(friendUUID)
+                    data[friendUUID]['friendReqs'].remove(uid) if uid in data[friendUUID]['friendReqs']
+                    data[uid]['friendReqs'].remove(friendUUID) if friendUUID in data[uid]['friendReqs']
                 except ValueError as e:
                     print(e)
                 self.write_data(data)
