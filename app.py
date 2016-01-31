@@ -358,6 +358,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                                            qdata['steps'][0])
                 if (len(info) == 2):
                     self.respond(info[0], info[1])
+                    return
             except AssertionError:
                 self.respond(400, 'Malformed Request')
                 return
