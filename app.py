@@ -168,10 +168,17 @@ class RequestHandler(BaseHTTPRequestHandler):
                     'time': time.strftime("%Y-%m-%dT%H:%M:%S"),
                     'id': pinId,
                     'layout': {
+                        'type': 'genericPin'
                         'title': 'Friend Request!',
                         'subtitle': 'Step Up!',
                         'body': requestorUsername + ' wants to be your friend on Step Up!',
-                        'type': 'genericPin'
+                    },
+                    'createNotification': {
+                        'layout': {
+                            'type': 'genericNotification',
+                            'title': 'Friend Request!',
+                            'body': requestorUsername + ' wants to be your friend on Step Up!'
+                        }
                     }
                 }, pinId)
             except urllib.error.HTTPError as e:
