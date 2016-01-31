@@ -157,7 +157,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if not uid in data:
             return (400, 'Your user doesn\'t exist');
         friendUUID = self.username_to_uid(data, friendUsername)
-        if friendUUID is not False and
+        if friendUUID is not False and\
            friendUUID in data:
             requestorUsername = self.uid_to_username(data, uid)
             if not 'friendReqs' in data[friendUUID]:
