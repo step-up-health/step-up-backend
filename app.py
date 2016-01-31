@@ -17,7 +17,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if not 'OPENSHIFT_DATA_DIR' in os.environ:
             return '../data/data.json'
         else:
-            return os.path.join([os.environ['OPENSHIFT_DATA_DIR'], 'data.json'])
+            return os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'data.json')
 
     def get_data(self):
         if not os.path.isfile(os.path.abspath(self.get_data_path())):
