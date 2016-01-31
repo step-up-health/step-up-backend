@@ -165,10 +165,12 @@ class RequestHandler(BaseHTTPRequestHandler):
                 pinId = 'friend-request-' + str(random.randint(10**8, 10**9))
                 self.pin(data, friendUUID, {
                     'time': time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    'id': pinId,
                     'layout': {
                         'title': 'Friend Request!',
                         'subtitle': 'Step Up!',
-                        'body': friendUsername + ' wants to be your friend on Step Up!'
+                        'body': friendUsername + ' wants to be your friend on Step Up!',
+                        'type': 'genericPin'
                     }
                 }, pinId)
             except urllib.error.HTTPError as e:
