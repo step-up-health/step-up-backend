@@ -253,17 +253,23 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             return (400, 'Friending user doesn\'t exist.')
 
-    def remove_friend(self, uid, friendUsername):
+    def delete_friend(self, uid, friendUsername):
         data = self.get_data()
         if not uid in data:
             data[uid] = {}
         if not 'friends' in data[uid]:
             data[uid]['friends'] = []
         friendUUID = self.username_to_uid(data, friendUsername)
+        requestorUsername = self.uid_to_username(data, uid)
         if not friendUUID is False:
             data[uid]['friends'] = list(set(data[uid]['friends']))
-            data[uid]['friends'].remove(friendUUID)
-            data[friendUUID]['friends'.remove(uid)]
+            if friendUUID in data[uid]['friends']:
+                data[uid]['friends'].remove(friendUUID)
+
+            data[friendUUID]['friends'] = list(set(data[friendUUID]['friends']))
+            if uid in data[friendUUID]['friends']:
+                data[friendUUID]['friends'].remove(uid)
+
             self.write_data(data)
             return (200, json.dumps(data[uid]['friends']))
         else:
@@ -357,25 +363,12 @@ class RequestHandler(BaseHTTPRequestHandler):
         except ValueError:
             pass
         try:
-            self.path.index('/add_friend')
-            try:
-                assert 'uid' in qdata and\
-                       'addusername' in qdata
-                info = self.add_friend(qdata['uid'][0],
-                                       qdata['addusername'][0])
-                self.respond(info[0], info[1])
-            except AssertionError:
-                self.respond(400, 'Malformed request')
-            return
-        except ValueError:
-            pass
-        try:
             self.path.index('/delete_friend')
             try:
                 assert 'uid' in qdata and\
                        'deleteusername' in qdata
                 info = self.delete_friend(qdata['uid'][0],
-                                       qdata['deleteusername'][0])
+                                          qdata['deleteusername'][0])
                 self.respond(info[0], info[1])
             except AssertionError:
                 self.respond(400, 'Malformed request')
