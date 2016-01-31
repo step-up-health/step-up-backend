@@ -194,7 +194,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                                              (friendUUID, requestorUsername)]:
                         pinId = 'friend-request-' + str(random.randint(10**8, 10**9))
                         self.pin(data, _uuid, {
-                            'time': time.strftime("%Y-%m-%dT%H:%M:%S"),
+                            'time': time.strftime("%Y-%m-%dT%H:%M:%S%z"),
                             'id': pinId,
                             'layout': {
                                 'type': 'genericPin',
@@ -222,7 +222,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 try:
                     pinId = 'friend-request-' + str(random.randint(10**8, 10**9))
                     self.pin(data, friendUUID, {
-                        'time': time.strftime("%Y-%m-%dT%H:%M:%S"),
+                        'time': time.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         'id': pinId,
                         'layout': {
                             'type': 'genericPin',
