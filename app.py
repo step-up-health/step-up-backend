@@ -181,6 +181,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 data[uid]['friends'] += friendUUID
                 data[friendUUID]['friendReqs'].remove(uid)
                 data[uid]['friendReqs'].remove(friendUUID)
+                return (200, 'OK')
             else:
                 # Let's go make some friends!
                 data[friendUUID]['friendReqs'] += [uid]
