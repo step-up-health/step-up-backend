@@ -20,15 +20,15 @@ class RequestHandler(BaseHTTPRequestHandler):
             return os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'data.json')
 
     def get_data(self):
-        if not os.path.isfile(os.path.abspath(self.get_data_path())):
-            with open(os.path.abspath(self.get_data_path()), 'w') as fh:
+        if not os.path.isfile(self.get_data_path()):
+            with open(self.get_data_path(), 'w') as fh:
                 fh.write("{}")
-        data = json.load(open(os.path.abspath(self.get_data_path()), 'r'))
+        data = json.load(open(self.get_data_path(), 'r'))
         print(data)
         return data
 
     def write_data(self, data):
-        json.dump(data, open(os.path.abspath(self.get_data_path()), 'w'), sort_keys=True,
+        json.dump(data, open(self.get_data_path(), 'w'), sort_keys=True,
                     indent=4, separators=(',', ': '))
 
     def username_to_uid(self, data, username):
