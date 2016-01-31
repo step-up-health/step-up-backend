@@ -161,8 +161,12 @@ class RequestHandler(BaseHTTPRequestHandler):
             requestorUsername = self.uid_to_username(data, uid)
             if not 'friendReqs' in data[friendUUID]:
                 data[friendUUID]['friendReqs'] = []
+            if not 'friendReqs' in data[uid]:
+                data[uid]['friendReqs'] = []
             if len(data[friendUUID]['friendReqs']) >= 20:
                 return (409, 'That person has maxed out their friends!')
+            if len(data[uid]['friendReqs']) >= 20:
+                return (409, 'You have maxed out their friends!')
             if uid == friendUUID:
                 return (409, 'You can\'t add yourself as a friend.')
             if friendUUID in data[uid]['friendReqs']:
