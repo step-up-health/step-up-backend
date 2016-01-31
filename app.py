@@ -187,9 +187,17 @@ class RequestHandler(BaseHTTPRequestHandler):
                                 'title': 'Friend Request!',
                                 'body': requestorUsername +
                                     ' wants to be your friend on Step Up!\n' +
-                                    'Select "More" from actions to accept or ignore.'
+                                    'Select "More" from actions to accept.'
                             }
-                        }
+                        },
+                        'actions': [
+                            {
+                                'title': 'Accept'
+                                'url': self.get_own_api_root() +
+                                       '/send_friend_request?uid=' + friendUUID +
+                                       '&addusername=' + requestorUsername
+                            }
+                        ]
                     }, pinId)
                 except urllib.error.HTTPError as e:
                     return (200, 'pin sending failure: ' + e.read().decode('utf-8'))
