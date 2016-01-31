@@ -330,8 +330,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         urldata = urllib.parse.urlparse(self.path)
         qdata = urllib.parse.parse_qs(urldata.query)
         print(qdata)
-        try:
-            self.path.index('/dump')
+        if '/dump' in self.path:
             try:
                 # NB this removes it in prod
                 assert not 'OPENSHIFT_PYTHON_IP' in os.environ
@@ -341,10 +340,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 return
             except AssertionError:
                 pass
-        except ValueError:
-            pass
-        try:
-            self.path.index('/username_in_use')
+        elif '/username_in_use' in self.path:
             try:
                 assert 'username' in qdata
                 info = self.username_in_use(qdata['username'][0])
@@ -353,10 +349,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             except AssertionError:
                 self.respond(400, 'Malformed Request')
                 return
-        except ValueError:
-            pass
-        try:
-            self.path.index('/get_active_friends')
+        elif '/get_active_friends' in self.path:
             try:
                 assert 'uid' in qdata and\
                        'dayhalf' in qdata
@@ -368,10 +361,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             except AssertionError:
                 self.respond(400, 'Malformed Request')
                 return
-        except ValueError:
-            pass
-        try:
-            self.path.index('/add_data_point')
+        elif '/add_data_point' in self.path:
             try:
                 assert 'uid' in qdata and\
                        'timeperiod' in qdata and\
@@ -385,10 +375,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             except AssertionError:
                 self.respond(400, 'Malformed Request')
                 return
-        except ValueError:
-            pass
-        try:
-            self.path.index('/send_friend_request')
+        elif '/send_friend_request' in self.path:
             try:
                 assert 'uid' in qdata and\
                        'addusername' in qdata
@@ -400,10 +387,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             except AssertionError:
                 self.respond(400, 'Malformed Request')
                 return
-        except ValueError:
-            pass
-        try:
-            self.path.index('/get_friends')
+        elif '/get_friends' in self.path:
             try:
                 assert 'uid' in qdata
                 info = self.get_friends(qdata['uid'][0])
@@ -411,10 +395,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             except AssertionError:
                 self.respond(400, 'Malformed request')
             return
-        except ValueError:
-            pass
-        try:
-            self.path.index('/delete_friend')
+        elif '/delete_friend' in self.path:
             try:
                 assert 'uid' in qdata and\
                        'deleteusername' in qdata
@@ -424,10 +405,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             except AssertionError:
                 self.respond(400, 'Malformed request')
             return
-        except ValueError:
-            pass
-        try:
-            self.path.index('/get_username')
+        elif '/get_username' in self.path:
             try:
                 assert 'uid' in qdata
                 print(self.path)
@@ -440,10 +418,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             except AssertionError:
                 self.respond(400, 'Malformed request')
                 return
-        except ValueError:
-            pass
-        try:
-            self.path.index('/set_username')
+        elif '/set_username' in self.path:
             try:
                 assert 'uid' in qdata and\
                        'username' in qdata
@@ -454,10 +429,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             except AssertionError:
                 self.respond(400, 'Malformed request')
                 return
-        except ValueError:
-            pass
-        try:
-            self.path.index('/set_timeline_token')
+        elif '/set_timeline_token' in self.path:
             try:
                 assert 'uid' in qdata and\
                        'tltoken' in qdata
@@ -468,8 +440,6 @@ class RequestHandler(BaseHTTPRequestHandler):
             except AssertionError:
                 self.respond(400, 'Malformed request')
                 return
-        except ValueError:
-            pass
         self.respond(400, 'Method missing')
 
 if __name__ == '__main__':
