@@ -277,14 +277,30 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             return (400, 'User doesn\'t exist.')
 
-    def get_active_friends(self, uid):
+    def get_active_friends(self, uid, partOfDay):
         data = self.get_data()
         if uid in data:
             if 'friends' in data[uid] and len(data[uid]['friends']) > 0:
                 friends = []
-                for friend in data[uid]['friends']:
-                    friends.append(data[friend])
-                return(200, json.dumps(friends))
+                for friendUUID in data[uid]['friends']:
+                    if not friendUUID in data:
+                        continue
+                    friend = data[friendUUID]
+                    if 'history' in friend:
+                        history = friend['history']
+                        history = sorted(history.items(), key=lambda x: x[0])
+                        history.pop() # Most recent value may be incomplete
+                        item = [x for x in history if partOfDay in x[0]][-1]
+                        friends.append(
+                            {
+                                'username': friend['username'],
+                                'steps': item[1],
+                                'timePeriod': item[0]
+                            }
+                        )
+                friends.sort(key=lambda x: x['steps'])
+                friends.sort(key=lambda x: x['timePeriod'])
+                return (200, json.dumps(friends))
             else:
                 return (200, json.dumps([]))
         else:
@@ -330,6 +346,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 assert 'username' in qdata
                 info = self.username_in_use(qdata['username'][0])
                 self.respond(200, json.dumps(str(info)))
+                return
             except AssertionError:
                 self.respond(400, 'Malformed Request')
                 return
@@ -338,8 +355,11 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             self.path.index('/get_active_friends')
             try:
-                assert 'uid' in qdata
-                info = self.get_active_friends(qdata['uid'][0])
+                assert 'uid' in qdata and\
+                       'dayhalf' in qdata
+                assert qdata['dayhalf'][0] in ['AM', 'PM']
+                info = self.get_active_friends(qdata['uid'][0],
+                                               qdata['dayhalf'][0])
                 self.respond(info[0], info[1])
                 return
             except AssertionError:
