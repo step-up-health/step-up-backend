@@ -344,7 +344,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             try:
                 assert 'username' in qdata,\
                        'uid' in qdata
-                ownerUid = self.username_to_uid(qdata['username'][0])
+                ownerUid = self.username_to_uid(self.get_data(), qdata['username'][0])
                 if ownerUid == qdata['uid'][0] or ownerUid is False:
                     self.respond(200, json.dumps('"False"'))
                     return
