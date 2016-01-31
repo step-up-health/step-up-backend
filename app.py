@@ -78,14 +78,14 @@ class RequestHandler(BaseHTTPRequestHandler):
             data = self.get_data()
             for key, item in data.items():
                 if key != uid:
-                    if item['username'] == username.lower():
+                    if item['username'] == username.lower().strip():
                         return (400, 'Username taken')
             for key, item in data.items():
                 if key == uid:
-                    item['username'] = username.lower()
+                    item['username'] = username.lower().strip()
                     self.write_data(data)
                     return (200, 'OK')
-            data[uid] = {'username': username.lower()}
+            data[uid] = {'username': username.lower().strip()}
             self.write_data(data)
             return (200, 'OK (created)')
         except ValueError as e:
