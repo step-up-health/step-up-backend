@@ -181,6 +181,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                 try:
                     data[friendUUID]['friends'] += [uid]
                     data[uid]['friends'] += [friendUUID]
+                    data[friendUUID]['friends'] = list(set(data[friendUUID]['friends']))
+                    data[uid]['friends'] = list(set(data[uid]['friends']))
                     if uid in data[friendUUID]['friendReqs']:
                         data[friendUUID]['friendReqs'].remove(uid)
                     if friendUUID in data[uid]['friendReqs']:
