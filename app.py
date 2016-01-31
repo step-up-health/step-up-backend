@@ -14,9 +14,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         return username in names
 
     def get_data(self):
-        # if not os.path.isfile(os.path.abspath('../data/data.json')):
-        #     with open(os.path.abspath('../data/data.json'), 'w') as fh:
-        #         fh.write('\{\}')
+        if not os.path.isfile(os.path.abspath('../data/data.json')):
+            with open(os.path.abspath('../data/data.json'), 'w') as fh:
+                fh.write("{}")
         data = json.load(open(os.path.abspath('../data/data.json'), 'r'))
         print(data)
         return data
