@@ -152,7 +152,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             return (400, 'Your user doesn\'t exist');
         friendUUID = self.username_to_uid(data, friendUsername)
         if friendUUID is not False:
-            requestorUsername = self.uid_to_username(uid)
+            requestorUsername = self.uid_to_username(data, uid)
             if not 'friendReqs' in data[friendUUID]:
                 data[friendUUID]['friendReqs'] = []
             if len(data[friendUUID]['friendReqs']) >= 20:
@@ -314,7 +314,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             try:
                 assert 'uid' in qdata
                 print(self.path)
-                username = self.get_username(qdata['uid'][0])
+                username = self.get_username(self.get_data(), qdata['uid'][0])
                 if username is not False:
                     self.respond(200, username)
                 else:
