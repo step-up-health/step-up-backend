@@ -23,6 +23,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if not os.path.isfile(self.get_data_path()):
             with open(self.get_data_path(), 'w') as fh:
                 fh.write("{}")
+        print(self.get_data_path())
         data = json.load(open(self.get_data_path(), 'r'))
         print(data)
         return data
