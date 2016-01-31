@@ -218,6 +218,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                         },
                         'actions': [
                             {
+                                'type': 'http',
+                                'method': 'GET'
                                 'title': 'Accept',
                                 'url': self.get_own_api_root() +
                                        'send_friend_request?uid=' + friendUUID +
