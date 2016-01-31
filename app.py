@@ -306,6 +306,6 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.respond(400, 'Method missing')
 
 if __name__ == '__main__':
-    server_address = (os.environ['OPENSHIFT_PYTHON_IP'], os.environ['OPENSHIFT_PYTHON_PORT'])
+    server_address = ('', os.environ['OPENSHIFT_PYTHON_PORT'])
     httpd = HTTPServer(server_address, RequestHandler)
     httpd.handle()
