@@ -314,7 +314,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             try:
                 assert 'uid' in qdata
                 print(self.path)
-                username = self.get_username(self.get_data(), qdata['uid'][0])
+                username = self.uid_to_username(self.get_data(), qdata['uid'][0])
                 if username is not False:
                     self.respond(200, username)
                 else:
