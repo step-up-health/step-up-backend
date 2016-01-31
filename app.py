@@ -290,7 +290,10 @@ class RequestHandler(BaseHTTPRequestHandler):
                         history = friend['history']
                         history = sorted(history.items(), key=lambda x: x[0])
                         history.pop() # Most recent value may be incomplete
-                        item = [x for x in history if partOfDay in x[0]][-1]
+                        try:
+                            item = [x for x in history if partOfDay in x[0]][-1]
+                        except IndexError:
+                            continue # not enough (& old enough) data.
                         friends.append(
                             {
                                 'username': friend['username'],
