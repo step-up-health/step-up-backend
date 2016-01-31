@@ -272,7 +272,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 data[friendUUID]['friends'].remove(uid)
 
             self.write_data(data)
-            return (200, json.dumps(data[uid]['friends']))
+            return (200, 'OK')
         else:
             return (400, 'User doesn\'t exist.')
 
