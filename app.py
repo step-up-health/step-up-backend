@@ -342,7 +342,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 pass
         elif '/username_in_use' in self.path:
             try:
-                assert 'username' in qdata,
+                assert 'username' in qdata,\
                        'uid' in qdata
                 ownerUid = self.username_to_uid(qdata['username'][0])
                 if ownerUid == qdata['uid'][0] || ownerUid is False:
