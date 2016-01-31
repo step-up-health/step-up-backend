@@ -308,4 +308,4 @@ class RequestHandler(BaseHTTPRequestHandler):
 if __name__ == '__main__':
     server_address = (os.environ['OPENSHIFT_PYTHON_IP'], int(os.environ['OPENSHIFT_PYTHON_PORT']))
     httpd = HTTPServer(server_address, RequestHandler)
-    httpd.handle()
+    httpd.handle_request()
