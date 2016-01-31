@@ -48,6 +48,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             return data[uid]['username']
         return False
 
+
     def respond(self, code, string):
         self.send_response(code)
         self.end_headers()
@@ -276,6 +277,19 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             return (400, 'User doesn\'t exist.')
 
+    def get_active_friends(self, uid):
+        data = self.get_data()
+        if uid in data:
+            if 'friends' in data[uid] and len(data[uid]['friends']) > 0:
+                friends = []
+                for friend in data[uid]['friends']:
+                    friends.append(data[friend])
+                return(200, json.dumps(friends))
+            else:
+                return (200, json.dumps([]))
+        else:
+            return (400, 'User missing')
+
     def dump_data(self):
         data = self.get_data()
         out = '<!DOCTYPE html><html><head></head><body>'
@@ -322,7 +336,19 @@ class RequestHandler(BaseHTTPRequestHandler):
         except ValueError:
             pass
         try:
-            self.path.index('/add_data')
+            self.path.index('/get_active_friends')
+            try:
+                assert 'uid' in qdata
+                info = self.get_active_friends(qdata['uid'][0])
+                self.respond(info[0], info[1])
+                return
+            except AssertionError:
+                self.respond(400, 'Malformed Request')
+                return
+        except ValueError:
+            pass
+        try:
+            self.path.index('/add_data_point')
             try:
                 assert 'uid' in qdata and\
                        'timeperiod' in qdata and\
