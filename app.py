@@ -85,7 +85,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     item['username'] = username.lower()
                     self.write_data(data)
                     return (200, 'OK')
-            data[uid] = {'username': username}
+            data[uid] = {'username': username.lower()}
             self.write_data(data)
             return (200, 'OK (created)')
         except ValueError as e:
@@ -190,7 +190,20 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             return (400, 'User doesn\'t exist.')
 
-    def end_headers (self):
+    def dump_data(self):
+        data = self.get_data()
+        out = '<!DOCTYPE html><html><head></head><body>'
+        for key, value in sorted(data.items(), key=lambda x: x[0]):
+            out += '<u>' + key + '</u>' +\
+                   '<blockquote>'
+            for propKey, propVal in sorted(value.items(), key=lambda x: x[0]):
+                out += '<b>' + propKey + '</b>: ' +\
+                       '<i>' + json.dumps(propVal) + '</i><br/>'
+            out += '</blockquote>'
+        out += '</body></html>'
+        return (200, out)
+
+    def end_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         BaseHTTPRequestHandler.end_headers(self)
 
@@ -199,6 +212,19 @@ class RequestHandler(BaseHTTPRequestHandler):
         qdata = urllib.parse.parse_qs(urldata.query)
         print(qdata)
         try:
+            self.path.index('/dump')
+            try:
+                # NB this removes it in prod
+                assert not 'OPENSHIFT_PYTHON_IP' in os.environ
+                info = self.dump_data()
+                print(info)
+                self.respond(info[0], info[1])
+                return
+            except AssertionError:
+                pass
+        except ValueError:
+            pass
+        try:
             self.path.index('/username_in_use')
             try:
                 assert 'username' in qdata
@@ -206,7 +232,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.respond(200, json.dumps(str(info)))
             except AssertionError:
                 self.respond(400, 'Malformed Request')
-            return
+                return
         except ValueError:
             pass
         try:
@@ -222,7 +248,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     self.respond(info[0], info[1])
             except AssertionError:
                 self.respond(400, 'Malformed Request')
-            return
+                return
         except ValueError:
             pass
         try:
@@ -234,9 +260,10 @@ class RequestHandler(BaseHTTPRequestHandler):
                                                 qdata['addusername'][0])
                 if (len(info) == 2):
                     self.respond(info[0], info[1])
+                    return
             except AssertionError:
                 self.respond(400, 'Malformed Request')
-            return
+                return
         except ValueError:
             pass
         try:
