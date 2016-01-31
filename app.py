@@ -5,10 +5,9 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.request, urllib.parse
 import random
 import json
+
+
 class RequestHandler(BaseHTTPRequestHandler):
-
-    # TODO friend requests
-
     def username_in_use(self, username):
         data = self.get_data()
         names = [x['username'] for x in data.values()]
@@ -147,6 +146,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             return (400, 'User doesn\'t exist.')
 
     def send_friend_request(self, uid, friendUsername):
+        # TODO dont allow sending friend reqs to people you've already friended.
         data = self.get_data()
         if not uid in data:
             return (400, 'Your user doesn\'t exist');
@@ -159,31 +159,41 @@ class RequestHandler(BaseHTTPRequestHandler):
                 return (409, 'That person has maxed out their friends!')
             if uid == friendUUID:
                 return (409, 'You can\'t add yourself as a friend.')
-            data[friendUUID]['friendReqs'] += [uid]
-            data[friendUUID]['friendReqs'] = list(set(data[friendUUID]['friendReqs']))
-            self.write_data(data)
-            try:
-                pinId = 'friend-request-' + str(random.randint(10**8, 10**9))
-                self.pin(data, friendUUID, {
-                    'time': time.strftime("%Y-%m-%dT%H:%M:%S"),
-                    'id': pinId,
-                    'layout': {
-                        'type': 'genericPin',
-                        'title': 'Friend Request!',
-                        'subtitle': 'Step Up!',
-                        'body': requestorUsername + ' wants to be your friend on Step Up!'
-                    },
-                    'createNotification': {
+            if friendUUID in data[uid]['friendReqs']:
+                # Yay! Friend request acception time!
+                data[friendUUID]['friends'] += uid
+                data[uid]['friends'] += friendUUID
+                data[friendUUID]['friendReqs'].remove(uid)
+                data[uid]['friendReqs'].remove(friendUUID)
+            else:
+                # Let's go make some friends!
+                data[friendUUID]['friendReqs'] += [uid]
+                data[friendUUID]['friendReqs'] = list(set(data[friendUUID]['friendReqs']))
+                self.write_data(data)
+                try:
+                    pinId = 'friend-request-' + str(random.randint(10**8, 10**9))
+                    self.pin(data, friendUUID, {
+                        'time': time.strftime("%Y-%m-%dT%H:%M:%S"),
+                        'id': pinId,
                         'layout': {
-                            'type': 'genericNotification',
+                            'type': 'genericPin',
                             'title': 'Friend Request!',
+                            'subtitle': 'Step Up!',
                             'body': requestorUsername + ' wants to be your friend on Step Up!'
+                        },
+                        'createNotification': {
+                            'layout': {
+                                'type': 'genericNotification',
+                                'title': 'Friend Request!',
+                                'body': requestorUsername +
+                                    ' wants to be your friend on Step Up!\n' +
+                                    'Select "More" from actions to accept or ignore.'
+                            }
                         }
-                    }
-                }, pinId)
-            except urllib.error.HTTPError as e:
-                return (200, 'pin sending failure: ' + e.read().decode('utf-8'))
-            return (200, 'OK')
+                    }, pinId)
+                except urllib.error.HTTPError as e:
+                    return (200, 'pin sending failure: ' + e.read().decode('utf-8'))
+                return (200, 'OK')
         else:
             return (400, 'Friending user doesn\'t exist.')
 
