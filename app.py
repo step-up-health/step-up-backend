@@ -14,10 +14,13 @@ class RequestHandler(BaseHTTPRequestHandler):
         return username in names
 
     def get_data(self):
-        return json.load(open('data.json', 'r'))
+        if not os.path.isfile('../data/data.json'):
+            with open('../data/data.json', 'w') as fh:
+                fh.write('\{\}')
+        return json.load(open('../data/data.json', 'r'))
 
     def write_data(self, data):
-        json.dump(data, open('data.json', 'w'), sort_keys=True,
+        json.dump(data, open('../data/data.json', 'w'), sort_keys=True,
                     indent=4, separators=(',', ': '))
 
     def username_to_uid(self, data, username):
@@ -306,6 +309,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.respond(400, 'Method missing')
 
 if __name__ == '__main__':
-    server_address = (os.environ['OPENSHIFT_PYTHON_IP'], int(os.environ['OPENSHIFT_PYTHON_PORT']))
+    if 'OPENSHIFT_PYTHON_IP' in os.environ:
+        server_address = (os.environ['OPENSHIFT_PYTHON_IP'],
+                          int(os.environ['OPENSHIFT_PYTHON_PORT']))
+    else:
+        server_address = ('', 8080)
     httpd = HTTPServer(server_address, RequestHandler)
     httpd.serve_forever()
