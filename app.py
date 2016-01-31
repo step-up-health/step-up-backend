@@ -14,13 +14,15 @@ class RequestHandler(BaseHTTPRequestHandler):
         return username in names
 
     def get_data(self):
-        if not os.path.isfile('../data/data.json'):
-            with open('../data/data.json', 'w') as fh:
-                fh.write('\{\}')
-        return json.load(open('../data/data.json', 'r'))
+        # if not os.path.isfile(os.path.abspath('../data/data.json')):
+        #     with open(os.path.abspath('../data/data.json'), 'w') as fh:
+        #         fh.write('\{\}')
+        data = json.load(open(os.path.abspath('../data/data.json'), 'r'))
+        print(data)
+        return data
 
     def write_data(self, data):
-        json.dump(data, open('../data/data.json', 'w'), sort_keys=True,
+        json.dump(data, open(os.path.abspath('../data/data.json'), 'w'), sort_keys=True,
                     indent=4, separators=(',', ': '))
 
     def username_to_uid(self, data, username):
@@ -69,14 +71,20 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             data = self.get_data()
             for key, item in data.items():
+                if key != uid:
+                    if item['username'] == username.lower():
+                        return (400, 'Username taken')
+            for key, item in data.items():
                 if key == uid:
                     item['username'] = username.lower()
                     self.write_data(data)
                     return (200, 'OK')
-            return (400, 'User doesn\'t exist')
+            data[uid] = {'username': username}
+            self.write_data(data)
+            return (200, 'OK (created)')
         except ValueError as e:
             print(e)
-        return False
+        return (400, 'Misc failure')
 
     def set_timeline_token(self, uid, tltoken):
         data = self.get_data()
@@ -284,8 +292,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                 assert 'uid' in qdata and\
                        'username' in qdata
                 print(self.path)
-                self.set_username(qdata['uid'][0], qdata['username'][0])
-                self.respond(200, 'OK')
+                info = self.set_username(qdata['uid'][0], qdata['username'][0])
+                self.respond(info[0], info[1])
                 return
             except AssertionError:
                 self.respond(400, 'Malformed request')
