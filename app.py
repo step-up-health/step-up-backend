@@ -117,7 +117,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if not 'history' in data[uid]:
             data[uid]['history'] = {}
         data[uid]['history'][timePeriod] = steps
-        data[uid]['history'] = pruneHistory(data[uid]['history'])
+        # data[uid]['history'] = pruneHistory(data[uid]['history'])
         self.write_data(data)
         return (200, 'OK')
 
