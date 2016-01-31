@@ -187,6 +187,26 @@ class RequestHandler(BaseHTTPRequestHandler):
                         data[friendUUID]['friendReqs'].remove(uid)
                     if friendUUID in data[uid]['friendReqs']:
                         data[uid]['friendReqs'].remove(friendUUID)
+                    for _uuid, _username in [(uid, friendUsername),
+                                             (friendUUID, requestorUsername)]:
+                        pinId = 'friend-request-' + str(random.randint(10**8, 10**9))
+                        self.pin(data, _uuid, {
+                            'time': time.strftime("%Y-%m-%dT%H:%M:%S"),
+                            'id': pinId,
+                            'layout': {
+                                'type': 'genericPin',
+                                'title': 'New Friend!',
+                                'subtitle': 'Step Up!',
+                                'body': _username + ' is now your friend on Step Up!'
+                            },
+                            'createNotification': {
+                                'layout': {
+                                    'type': 'genericNotification',
+                                    'title': 'New Friend!',
+                                    'body': 'You and ' + _username + ' are now friends on Step Up!'
+                                }
+                            }
+                        }, pinId)
                 except ValueError as e:
                     print(e)
                 self.write_data(data)
