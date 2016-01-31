@@ -171,7 +171,9 @@ class RequestHandler(BaseHTTPRequestHandler):
                 return (409, 'You have maxed out their friends!')
             if uid == friendUUID:
                 return (409, 'You can\'t add yourself as a friend.')
-            if friendUUID in data[uid]['friendReqs']:
+            if friendUUID in data[uid]['friends']:
+                return (200, 'Already befriended')
+            elif friendUUID in data[uid]['friendReqs']:
                 if not 'friends' in data[friendUUID]:
                     data[friendUUID]['friends'] = []
                 if not 'friends' in data[uid]:
