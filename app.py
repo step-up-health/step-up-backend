@@ -177,8 +177,8 @@ class RequestHandler(BaseHTTPRequestHandler):
 
                 # Yay! Friend request acception time!
                 print('mutual acception', uid, friendUUID)
-                data[friendUUID]['friends'] += uid
-                data[uid]['friends'] += friendUUID
+                data[friendUUID]['friends'] += [uid]
+                data[uid]['friends'] += [friendUUID]
                 data[friendUUID]['friendReqs'].remove(uid)
                 data[uid]['friendReqs'].remove(friendUUID)
                 return (200, 'OK')
