@@ -159,7 +159,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 return (409, 'That person has maxed out their friends!')
             if uid == friendUUID:
                 return (409, 'You can\'t add yourself as a friend.')
-            data[friendUUID]['friendReqs'] += uid
+            data[friendUUID]['friendReqs'] += [uid]
             data[friendUUID]['friendReqs'] = list(set(data[friendUUID]['friendReqs']))
             self.write_data(data)
             try:
@@ -316,7 +316,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 print(self.path)
                 username = self.uid_to_username(self.get_data(), qdata['uid'][0])
                 if username is not False:
-                    self.respond(200, username)
+                    self.respond(200, json.dumps(username))
                 else:
                     self.respond(404, 'User not registered')
                 return
