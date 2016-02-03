@@ -9,6 +9,10 @@ import json
 
 class RequestHandler(BaseHTTPRequestHandler):
     def username_in_use(self, username):
+        if len(username) < 2:
+            return False
+        if len(username) > 20:
+            return False
         data = self.get_data()
         names = [x['username'] for x in data.values()]
         return username in names
@@ -80,17 +84,22 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def set_username(self, uid, username):
         try:
+            username = username.lower().strip()
             data = self.get_data()
+            if len(username) < 2:
+                return (400, 'Username too short (min 2 characters)')
+            if len(username) > 20:
+                return (400, 'Username too long (max 20 characters)')
             for key, item in data.items():
                 if key != uid:
-                    if item['username'] == username.lower().strip():
+                    if item['username'] == username.lower():
                         return (400, 'Username taken')
             for key, item in data.items():
                 if key == uid:
-                    item['username'] = username.lower().strip()
+                    item['username'] = username.lower()
                     self.write_data(data)
                     return (200, 'OK')
-            data[uid] = {'username': username.lower().strip()}
+            data[uid] = {'username': username}
             self.write_data(data)
             return (200, 'OK (created)')
         except ValueError as e:
