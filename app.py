@@ -386,10 +386,10 @@ class RequestHandler(BaseHTTPRequestHandler):
                 if ownerUid == qdata['uid'][0] or ownerUid is False:
                     self.respond(200, json.dumps('"False"'))
                     return
-                if len(username) < 2:
+                if len(qdata['username'][0]) < 2:
                     self.respond(200, json.dumps('"False"'))
                     return
-                if len(username) > 20:
+                if len(qdata['username'][0]) > 20:
                     self.respond(200, json.dumps('"False"'))
                     return
                 self.respond(200, json.dumps('"True"'))
