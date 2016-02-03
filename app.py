@@ -161,7 +161,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         outgoingReqs = []
         for friendUUID, friend in data.items():
             if uid in friend['friendReqs']:
-                outgoingReqs.push(friend['username'])
+                outgoingReqs += [friend['username']]
         return (200, json.dumps(outgoingReqs))
 
     def get_incoming_friend_reqs(self, uid):
@@ -173,7 +173,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         incomingReqs = []
         for friendUUID in data[uid]['friends']:
             if friendUUID in data:
-                incomingReqs.push(data[friendUUID]['username'])
+                incomingReqs += [data[friendUUID]['username']]
         return (200, json.dumps(incomingReqs))
 
     def send_friend_request(self, uid, friendUsername):
@@ -414,10 +414,9 @@ class RequestHandler(BaseHTTPRequestHandler):
                                                 qdata['addusername'][0])
                 if (len(info) == 2):
                     self.respond(info[0], info[1])
-                    return
             except AssertionError:
                 self.respond(400, 'Malformed Request')
-                return
+            return
         elif '/get_friends' in self.path:
             try:
                 assert 'uid' in qdata
@@ -445,10 +444,9 @@ class RequestHandler(BaseHTTPRequestHandler):
                     self.respond(200, json.dumps(username))
                 else:
                     self.respond(404, 'User not registered')
-                return
             except AssertionError:
                 self.respond(400, 'Malformed request')
-                return
+            return
         elif '/get_outgoing_friend_reqs' in self.path:
             try:
                 assert 'uid' in qdata
@@ -457,7 +455,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.respond(info[0], info[1])
             except AssertionError:
                 self.respond(400, 'Malformed request')
-                return
+            return
         elif '/get_incoming_friend_reqs' in self.path:
             try:
                 assert 'uid' in qdata
@@ -466,7 +464,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.respond(info[0], info[1])
             except AssertionError:
                 self.respond(400, 'Malformed request')
-                return
+            return
         elif '/set_username' in self.path:
             try:
                 assert 'uid' in qdata and\
@@ -474,10 +472,9 @@ class RequestHandler(BaseHTTPRequestHandler):
                 print(self.path)
                 info = self.set_username(qdata['uid'][0], qdata['username'][0])
                 self.respond(info[0], info[1])
-                return
             except AssertionError:
                 self.respond(400, 'Malformed request')
-                return
+            return
         elif '/set_timeline_token' in self.path:
             try:
                 assert 'uid' in qdata and\
@@ -485,10 +482,9 @@ class RequestHandler(BaseHTTPRequestHandler):
                 print(self.path)
                 info = self.set_timeline_token(qdata['uid'][0], qdata['tltoken'][0])
                 self.respond(info[0], info[1])
-                return
             except AssertionError:
                 self.respond(400, 'Malformed request')
-                return
+            return
         self.respond(400, 'Method missing')
 
 if __name__ == '__main__':
