@@ -152,6 +152,30 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             return (400, 'User doesn\'t exist.')
 
+    def get_outgoing_friend_reqs(self, uid):
+        data = self.get_data()
+        if not uid in data:
+            return (400, 'User doesn\'t exist');
+        if not 'friends' in data[uid]:
+            data[uid]['friends'] = []
+        outgoingReqs = []
+        for friendUUID, friend in data.items():
+            if uid in friend['friendReqs']:
+                outgoingReqs.push(friend['username'])
+        return (200, json.dumps(outgoingReqs))
+
+    def get_incoming_friend_reqs(self, uid):
+        data = self.get_data()
+        if not uid in data:
+            return (400, 'User doesn\'t exist');
+        if not 'friends' in data[uid]:
+            data[uid]['friends'] = []
+        incomingReqs = []
+        for friendUUID in data[uid]['friends']:
+            if friendUUID in data:
+                incomingReqs.push(data[friendUUID]['username'])
+        return (200, json.dumps(incomingReqs))
+
     def send_friend_request(self, uid, friendUsername):
         # TODO dont allow sending friend reqs to people you've already friended.
         data = self.get_data()
@@ -422,6 +446,24 @@ class RequestHandler(BaseHTTPRequestHandler):
                 else:
                     self.respond(404, 'User not registered')
                 return
+            except AssertionError:
+                self.respond(400, 'Malformed request')
+                return
+        elif '/get_outgoing_friend_reqs' in self.path:
+            try:
+                assert 'uid' in qdata
+                print(self.path)
+                info = self.get_outgoing_friend_reqs(qdata['uid'][0])
+                self.respond(info[0], info[1])
+            except AssertionError:
+                self.respond(400, 'Malformed request')
+                return
+        elif '/get_incoming_friend_reqs' in self.path:
+            try:
+                assert 'uid' in qdata
+                print(self.path)
+                info = self.get_incoming_friend_reqs(qdata['uid'][0])
+                self.respond(info[0], info[1])
             except AssertionError:
                 self.respond(400, 'Malformed request')
                 return
