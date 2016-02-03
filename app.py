@@ -383,13 +383,10 @@ class RequestHandler(BaseHTTPRequestHandler):
                 assert 'username' in qdata,\
                        'uid' in qdata
                 ownerUid = self.username_to_uid(self.get_data(), qdata['username'][0])
+                if len(qdata['username'][0]) < 2 or len(qdata['username'][0]) > 20:
+                    self.respond(200, json.dumps('"True"'))
+                    return
                 if ownerUid == qdata['uid'][0] or ownerUid is False:
-                    self.respond(200, json.dumps('"False"'))
-                    return
-                if len(qdata['username'][0]) < 2:
-                    self.respond(200, json.dumps('"False"'))
-                    return
-                if len(qdata['username'][0]) > 20:
                     self.respond(200, json.dumps('"False"'))
                     return
                 self.respond(200, json.dumps('"True"'))
