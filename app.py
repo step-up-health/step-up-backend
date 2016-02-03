@@ -10,9 +10,9 @@ import json
 class RequestHandler(BaseHTTPRequestHandler):
     def username_in_use(self, username):
         if len(username) < 2:
-            return False
+            return True
         if len(username) > 20:
-            return False
+            return True
         data = self.get_data()
         names = [x['username'] for x in data.values()]
         return username in names
