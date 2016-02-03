@@ -160,6 +160,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             data[uid]['friends'] = []
         outgoingReqs = []
         for friendUUID, friend in data.items():
+            if not 'friendReqs' in friend:
+                continue
             if uid in friend['friendReqs']:
                 outgoingReqs += [friend['username']]
         return (200, json.dumps(outgoingReqs))
@@ -168,10 +170,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         data = self.get_data()
         if not uid in data:
             return (400, 'User doesn\'t exist');
-        if not 'friends' in data[uid]:
-            data[uid]['friends'] = []
+        if not 'friendReqs' in data[uid]:
+            data[uid]['friendReqs'] = []
         incomingReqs = []
-        for friendUUID in data[uid]['friends']:
+        for friendUUID in data[uid]['friendReqs']:
             if friendUUID in data:
                 incomingReqs += [data[friendUUID]['username']]
         return (200, json.dumps(incomingReqs))
