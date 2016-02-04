@@ -9,7 +9,7 @@ import json
 
 class RequestHandler(BaseHTTPRequestHandler):
     def username_in_use(self, username):
-        if len(username) < 2:
+        if len(username) < 1:
             return True
         if len(username) > 20:
             return True
@@ -85,8 +85,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             username = username.lower().strip()
             data = self.get_data()
-            if len(username) < 2:
-                return (400, 'Username too short (min 2 characters)')
+            if len(username) < 1:
+                return (400, 'Username too short (min 1 character)')
             if len(username) > 20:
                 return (400, 'Username too long (max 20 characters)')
             for key, item in data.items():
@@ -382,7 +382,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 assert 'username' in qdata,\
                        'uid' in qdata
                 ownerUid = self.username_to_uid(self.get_data(), qdata['username'][0])
-                if len(qdata['username'][0]) < 2 or len(qdata['username'][0]) > 20:
+                if len(qdata['username'][0]) < 1 or len(qdata['username'][0]) > 20:
                     self.respond(200, json.dumps('"True"'))
                     return
                 if ownerUid == qdata['uid'][0] or ownerUid is False:
