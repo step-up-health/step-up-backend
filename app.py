@@ -28,7 +28,6 @@ class RequestHandler(BaseHTTPRequestHandler):
             with open(self.get_data_path(), 'w') as fh:
                 fh.write("{}")
         data = json.load(open(self.get_data_path(), 'r'))
-        print(data)
         return data
 
     def write_data(self, data):
