@@ -247,6 +247,9 @@ class RequestHandler(BaseHTTPRequestHandler):
                         }, pinId)
                 except ValueError as e:
                     print(e)
+                except urllib.error.HTTPError as e:
+                    print('HTTPError happened!!')
+                    print(e)
                 self.write_data(data)
                 return (200, 'OK')
             else:
