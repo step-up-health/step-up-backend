@@ -366,7 +366,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         urldata = urllib.parse.urlparse(self.path)
         qdata = urllib.parse.parse_qs(urldata.query)
-        print(qdata)
+        print(json.dumps(qdata))
         if '/dump' in self.path:
             try:
                 # NB this removes it in prod
