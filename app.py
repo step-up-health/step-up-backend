@@ -52,6 +52,10 @@ class RequestHandler(BaseHTTPRequestHandler):
             return data[uid]['username']
         return False
 
+    def prune_history(self, hist):
+        histItems = sorted(hist.items(), key=lambda x:x[0])[-6:]
+        histItems = {x[0]: x[1] for x in histItems}
+        return histItems
 
     def respond(self, code, string):
         self.send_response(code)
@@ -129,7 +133,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if not 'history' in data[uid]:
             data[uid]['history'] = {}
         data[uid]['history'][timePeriod] = steps
-        # data[uid]['history'] = pruneHistory(data[uid]['history'])
+        data[uid]['history'] = self.prune_history(data[uid]['history'])
         self.write_data(data)
         return (200, 'OK')
 
