@@ -20,7 +20,7 @@ def weird_hash(data):
     hashed.update(data.encode('utf-8'))
     digest = hashed.hexdigest()
     uppercase_offset = ord('A') - ord('0')
-    for x in range(ord('0'), ord('9')):
+    for x in range(ord('0'), ord('9') + 1):
         digest = digest.replace(chr(x), chr(x + uppercase_offset))
     return digest
 
