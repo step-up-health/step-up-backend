@@ -17,7 +17,7 @@ def get_data():
 
 def weird_hash(data):
     hashed = hashlib.md5()
-    hashed.update(encode(data, 'utf-8'))
+    hashed.update(data.encode('utf-8'))
     digest = hashed.hexdigest()
     uppercase_offset = ord('A') - ord('0')
     for x in range(ord('0'), ord('9')):
