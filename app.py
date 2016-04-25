@@ -325,6 +325,20 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             return (400, 'User doesn\'t exist.')
 
+    def date_to_timeperiod_str(self, dt):
+        return dt.isoformat()
+
+    def is_recent_ish(self, timestring):
+        import datetime
+        stamp = int(time.time()) + 24*60*60
+        valids = []
+        for x in range(stamp - 2 * 24*60*60, stamp + 1, 24*60*60):
+            dt = datetime.date.fromtimestamp(int(x))
+            print(timestring, dt)
+            if self.date_to_timeperiod_str(dt) in timestring:
+                return True;
+        return False;
+
     def get_active_friends(self, uid, partOfDay):
         data = self.get_data()
         if uid in data:
@@ -336,10 +350,14 @@ class RequestHandler(BaseHTTPRequestHandler):
                     friend = data[friendUUID]
                     if 'history' in friend:
                         history = friend['history']
-                        history = sorted(history.items(), key=lambda x: x[0])
+                        history = sorted(history.items(), key=lambda x: x[0],
+                            reverse=True)
                         history.pop() # Most recent value may be incomplete
                         try:
-                            item = [x for x in history if partOfDay in x[0]][-1]
+                            print(history)
+                            print(data[friendUUID]['username'])
+                            item = [x for x in history if partOfDay in x[0] and
+                                    self.is_recent_ish(x[0])][-1]
                         except IndexError:
                             continue # not enough (& old enough) data.
                         friends.append(
