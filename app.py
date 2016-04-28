@@ -99,7 +99,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                 return (400, 'Username too long (max 20 characters)')
             for key, item in data.items():
                 if key != uid:
-                    if item['username'] == username.lower():
+                    if 'username' in item and\
+                            item['username'] == username.lower():
                         return (400, 'Username taken')
             for key, item in data.items():
                 if key == uid:
