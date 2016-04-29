@@ -100,7 +100,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             for key, item in data.items():
                 if key != uid:
                     if 'username' in item and\
-                            item['username'] == username.lower():
+                            ™item['username'] == username.lower():
                         return (400, 'Username taken')
             for key, item in data.items():
                 if key == uid:
@@ -151,6 +151,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def add_friend(self, uid, friendUsername):
         data = self.get_data()
+        friendUsername = friendUsername.lower()
         if not uid in data:
             return (400, 'User doesn\'t exist');
         if not 'friends' in data[uid]:
