@@ -100,7 +100,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             for key, item in data.items():
                 if key != uid:
                     if 'username' in item and\
-                            ™item['username'] == username.lower():
+                            item['username'] == username.lower():
                         return (400, 'Username taken')
             for key, item in data.items():
                 if key == uid:
