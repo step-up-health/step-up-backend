@@ -336,7 +336,6 @@ class RequestHandler(BaseHTTPRequestHandler):
         valids = []
         for x in range(stamp - 2 * 24*60*60, stamp + 1, 24*60*60):
             dt = datetime.date.fromtimestamp(int(x))
-            print(timestring, dt)
             if self.date_to_timeperiod_str(dt) in timestring:
                 return True;
         return False;
@@ -356,8 +355,6 @@ class RequestHandler(BaseHTTPRequestHandler):
                             reverse=True)
                         history.pop() # Most recent value may be incomplete
                         try:
-                            print(history)
-                            print(data[friendUUID]['username'])
                             item = [x for x in history if partOfDay in x[0] and
                                     self.is_recent_ish(x[0])][-1]
                         except IndexError:
